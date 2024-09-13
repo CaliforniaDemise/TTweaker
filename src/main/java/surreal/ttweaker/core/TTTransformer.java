@@ -79,7 +79,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         reader.accept(cls, 0);
 
         for (MethodNode method : cls.methods) {
-            if (method.name.equals(deobf ? "onBlockActivated" : "")) {
+            if (method.name.equals(deobf ? "onBlockActivated" : "func_180639_a")) {
                 Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
@@ -116,7 +116,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         reader.accept(cls, 0);
 
         for (MethodNode method : cls.methods) {
-            if (method.name.equals(deobf ? "onBlockActivated" : "")) {
+            if (method.name.equals(deobf ? "onBlockActivated" : "func_180639_a")) {
                 Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 int i = 0;
                 while (iterator.hasNext()) {
