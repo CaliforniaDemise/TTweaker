@@ -31,6 +31,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         put("net.minecraft.inventory.ContainerBrewingStand", this::transformContainerBrewingStand);
 
         put("com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes", this::transformChoppingBoardRecipes);
+        put("com.tiviacz.pizzacraft.blocks.BlockPizza", this::transformBlockPizza);
     }
 
     @Override
@@ -66,6 +67,43 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         }
 
         ClassWriter writer = new ClassWriter(COMPUTE_ALL);
+        cls.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] transformBlockPizza(byte[] basicClass) {
+
+        ClassReader reader = new ClassReader(basicClass);
+        ClassNode cls = new ClassNode();
+        reader.accept(cls, 0);
+
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals(deobf ? "onBlockActivated" : "")) {
+                Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+                    if (node.getOpcode() == GETSTATIC) {
+                        FieldInsnNode field = (FieldInsnNode) node;
+                        if (field.name.equals("PEEL")) {
+                            method.instructions.insert(node, new MethodInsnNode(INVOKESTATIC, HOOKS, "isPeel", "(Lnet/minecraft/item/ItemStack;)Z", false));
+                            method.instructions.remove(node.getPrevious());
+                            iterator.remove();
+                            ((JumpInsnNode) iterator.next()).setOpcode(IFEQ);
+                        }
+                        else if (field.name.equals("KNIFE")) {
+                            method.instructions.insert(node, new MethodInsnNode(INVOKESTATIC, HOOKS, "isKnife", "(Lnet/minecraft/item/ItemStack;)Z", false));
+                            method.instructions.remove(node.getPrevious());
+                            iterator.remove();
+                            ((JumpInsnNode) iterator.next()).setOpcode(IFEQ);
+                            break;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cls.accept(writer);
         return writer.toByteArray();
     }

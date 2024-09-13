@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import surreal.ttweaker.crafttweaker.BrewingFuel;
 import surreal.ttweaker.crafttweaker.expansions.*;
 
-@Mod(modid = TTweaker.MODID, name = "TTweaker", version = Tags.VERSION, dependencies = "required-after:crafttweaker")
+@Mod(modid = TTweaker.MODID, name = "TTweaker", version = Tags.VERSION, dependencies = "required-after:crafttweaker;after:pizzacraft")
 public class TTweaker {
 
     public static final String MODID = "ttweaker";
