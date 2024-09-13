@@ -34,7 +34,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
 
-        var function = functions.get(name);
+        var function = functions.get(transformedName);
         if (function != null) basicClass = function.apply(basicClass);
 
         return basicClass;

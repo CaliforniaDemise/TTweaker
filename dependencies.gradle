@@ -13,6 +13,6 @@ dependencies {
     implementation 'curse.maven:crafttweaker-239197:4566528'
 
     // Psi
-    implementation rfg.deobf('curse.maven:autoreglib-250363:2746011')
-    implementation rfg.deobf('curse.maven:psi-241665:3085917')
+    compileOnly rfg.deobf('curse.maven:autoreglib-250363:2746011')
+    compileOnly rfg.deobf('curse.maven:psi-241665:3085917')
 }
