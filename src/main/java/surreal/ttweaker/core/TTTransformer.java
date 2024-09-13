@@ -32,6 +32,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
 
         put("com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes", this::transformChoppingBoardRecipes);
         put("com.tiviacz.pizzacraft.blocks.BlockPizza", this::transformBlockPizza);
+        put("com.tiviacz.pizzacraft.blocks.BlockChoppingBoard", this::transformChoppingBoard);
     }
 
     @Override
@@ -104,6 +105,36 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         }
 
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        cls.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] transformChoppingBoard(byte[] basicClass) {
+
+        ClassReader reader = new ClassReader(basicClass);
+        ClassNode cls = new ClassNode();
+        reader.accept(cls, 0);
+
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals(deobf ? "onBlockActivated" : "")) {
+                Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                int i = 0;
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+                    if (node.getOpcode() == GETSTATIC && ((FieldInsnNode) node).name.equals("KNIFE")) {
+                        method.instructions.insert(node, new MethodInsnNode(INVOKESTATIC, HOOKS, "isKnife", "(Lnet/minecraft/item/ItemStack;)Z", false));
+                        method.instructions.remove(node.getPrevious());
+                        iterator.remove();
+                        ((JumpInsnNode) iterator.next()).setOpcode(IFEQ);
+                        i++;
+                        if (i == 2) break;
+                    }
+                }
+                break;
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(COMPUTE_ALL);
         cls.accept(writer);
         return writer.toByteArray();
     }
