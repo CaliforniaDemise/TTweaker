@@ -3,8 +3,6 @@ package surreal.ttweaker.core;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
@@ -19,7 +17,6 @@ public class TTTransformer implements IClassTransformer, Opcodes {
 
     private final int COMPUTE_ALL = ClassWriter.COMPUTE_MAXS;
     private final boolean deobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
-    private final Logger logger = LogManager.getLogger("TTweaker");
 
     private final String HOOKS = "surreal/ttweaker/core/TTHooks";
 
