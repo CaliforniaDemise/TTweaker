@@ -13,7 +13,6 @@ import stanhebben.zenscript.annotations.ZenMethod;
 import java.util.Iterator;
 import java.util.Map;
 
-// TODO Make Chopping Board "faster". It's using map, at least make it use the map properly.
 @ZenRegister
 @ModOnly("pizzacraft")
 @ZenClass("mods.pizzacraft.ChoppingBoard")
