@@ -5,10 +5,7 @@ import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
@@ -34,6 +31,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         put("com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes", this::transformChoppingBoardRecipes);
         put("com.tiviacz.pizzacraft.blocks.BlockPizza", this::transformBlockPizza);
         put("com.tiviacz.pizzacraft.blocks.BlockChoppingBoard", this::transformChoppingBoard);
+        put("com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardUtils", this::transformChoppingBoardUtils);
     }
 
     @Override
@@ -84,6 +82,43 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         }
 
         ClassWriter writer = new ClassWriter(COMPUTE_ALL);
+        cls.accept(writer);
+        return writer.toByteArray();
+    }
+
+    private byte[] transformChoppingBoardUtils(byte[] basicClass) {
+
+        ClassReader reader = new ClassReader(basicClass);
+        ClassNode cls = new ClassNode();
+        reader.accept(cls, 0);
+
+        Iterator<MethodNode> iterator = cls.methods.iterator();
+        while (iterator.hasNext()) {
+            MethodNode method = iterator.next();
+            if (method.name.equals("isItemValid")) {
+                iterator.remove();
+                break;
+            }
+        }
+
+        { // isItemValid
+            MethodVisitor m = cls.visitMethod(ACC_PUBLIC | ACC_STATIC, "isItemValid", "(Lnet/minecraft/item/ItemStack;)Z", null, null);
+            m.visitMethodInsn(INVOKESTATIC, "com/tiviacz/pizzacraft/crafting/chopping/ChoppingBoardRecipes", "instance", "()Lcom/tiviacz/pizzacraft/crafting/chopping/ChoppingBoardRecipes;", false);
+            m.visitVarInsn(ALOAD, 0);
+            m.visitMethodInsn(INVOKEVIRTUAL, "com/tiviacz/pizzacraft/crafting/chopping/ChoppingBoardRecipes", "getChoppingResult", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", false);
+            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", deobf ? "isEmpty" : "func_190926_b", "()Z", false);
+            Label l_con = new Label();
+            m.visitJumpInsn(IFNE, l_con);
+            m.visitLabel(new Label());
+            m.visitInsn(ICONST_1);
+            m.visitInsn(IRETURN);
+            m.visitLabel(l_con);
+            m.visitFrame(F_SAME, 0, null, 0, null);
+            m.visitInsn(ICONST_0);
+            m.visitInsn(IRETURN);
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
         cls.accept(writer);
         return writer.toByteArray();
     }
