@@ -19,7 +19,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
 
     private final Map<String, Function<byte[], byte[]>> functions;
 
-    private final int COMPUTE_ALL = ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS;
+    private final int COMPUTE_ALL = ClassWriter.COMPUTE_MAXS;
     private final boolean deobf = FMLLaunchHandler.isDeobfuscatedEnvironment();
     private final Logger logger = LogManager.getLogger("TTweaker");
 
@@ -29,6 +29,8 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         this.functions = new Object2ObjectOpenHashMap<>();
         put("net.minecraft.tileentity.TileEntityBrewingStand", this::transformTEBrewingStand);
         put("net.minecraft.inventory.ContainerBrewingStand", this::transformContainerBrewingStand);
+
+        put("com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes", this::transformChoppingBoardRecipes);
     }
 
     @Override
@@ -40,6 +42,32 @@ public class TTTransformer implements IClassTransformer, Opcodes {
 
     private void put(String name, Function<byte[], byte[]> function) {
         this.functions.put(name, function);
+    }
+
+    private byte[] transformChoppingBoardRecipes(byte[] basicClass) {
+
+        ClassReader reader = new ClassReader(basicClass);
+        ClassNode cls = new ClassNode();
+        reader.accept(cls, 0);
+
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals("<init>")) {
+                Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+                    if (node.getOpcode() == INVOKESTATIC) {
+                        method.instructions.insertBefore(node, new MethodInsnNode(INVOKESTATIC, HOOKS, "createMap", "()Ljava/util/Map;", false));
+                        iterator.remove();
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(COMPUTE_ALL);
+        cls.accept(writer);
+        return writer.toByteArray();
     }
 
     private byte[] transformContainerBrewingStand(byte[] basicClass) {
@@ -162,7 +190,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
             }
         }
 
-        ClassWriter writer = new ClassWriter(COMPUTE_ALL);
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
         cls.accept(writer);
 
         return writer.toByteArray();

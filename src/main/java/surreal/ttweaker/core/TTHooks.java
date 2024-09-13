@@ -1,14 +1,21 @@
 package surreal.ttweaker.core;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import surreal.ttweaker.crafttweaker.BrewingFuel;
+import surreal.ttweaker.utils.HashStrategies;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
 public class TTHooks {
+
+    public static Map<ItemStack, ItemStack> createMap() {
+        return new Object2ObjectOpenCustomHashMap<>(HashStrategies.ITEMSTACK_STRATEGY);
+    }
 
     public static void handleFuel(TileEntityBrewingStand tile, ItemStack fuel) {
         int time = BrewingFuel.getTime(fuel);
