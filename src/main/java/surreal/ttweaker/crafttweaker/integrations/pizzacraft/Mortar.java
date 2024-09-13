@@ -24,7 +24,7 @@ public class Mortar {
             CraftTweakerAPI.getLogger().logError("Insufficient amount of inputs!");
             return;
         }
-        else if (inputs.length > 9) {
+        else if (inputs.length > 2) {
             CraftTweakerAPI.getLogger().logError("Amount of inputs can only be between 1 and 9!");
             return;
         }
