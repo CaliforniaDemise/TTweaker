@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraftforge.oredict.OreDictionary;
 import surreal.ttweaker.crafttweaker.BrewingFuel;
 import surreal.ttweaker.utils.HashStrategies;
+import surreal.ttweaker.utils.ItemStackMap;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
 public class TTHooks {
 
     public static Map<ItemStack, ItemStack> createMap() {
-        return new Object2ObjectOpenCustomHashMap<>(HashStrategies.ITEMSTACK_STRATEGY);
+        return new ItemStackMap<>(ItemStack.EMPTY);
     }
 
     public static boolean isPeel(ItemStack stack) {

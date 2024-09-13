@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
@@ -52,7 +53,9 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         ClassNode cls = new ClassNode();
         reader.accept(cls, 0);
 
-        for (MethodNode method : cls.methods) {
+        Iterator<MethodNode> methodIterator = cls.methods.iterator();
+        while (methodIterator.hasNext()) {
+            MethodNode method = methodIterator.next();
             if (method.name.equals("<init>")) {
                 Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
@@ -63,8 +66,21 @@ public class TTTransformer implements IClassTransformer, Opcodes {
                         break;
                     }
                 }
+            }
+            else if (method.name.equals("getChoppingResult")) {
+                methodIterator.remove();
                 break;
             }
+        }
+
+        { // getChoppingResult
+            MethodVisitor m = cls.visitMethod(ACC_PUBLIC, "getChoppingResult", "(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", null, null);
+            m.visitVarInsn(ALOAD, 0);
+            m.visitFieldInsn(GETFIELD, cls.name, "choppingList", "Ljava/util/Map;");
+            m.visitVarInsn(ALOAD, 1);
+            m.visitMethodInsn(INVOKEINTERFACE, "java/util/Map", "get", "(Ljava/lang/Object;)Ljava/lang/Object;", true);
+            m.visitTypeInsn(CHECKCAST, "net/minecraft/item/ItemStack");
+            m.visitInsn(ARETURN);
         }
 
         ClassWriter writer = new ClassWriter(COMPUTE_ALL);
