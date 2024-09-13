@@ -1,6 +1,10 @@
 
 repositories {
     maven {
+        name 'CleanroomMC Maven'
+        url 'https://maven.cleanroommc.com'
+    }
+    maven {
         name 'CurseMaven'
         url 'https://cursemaven.com'
         content {
@@ -15,4 +19,9 @@ dependencies {
     // Psi
     compileOnly rfg.deobf('curse.maven:autoreglib-250363:2746011')
     compileOnly rfg.deobf('curse.maven:psi-241665:3085917')
+
+    // Pizzacraft
+    implementation rfg.deobf('curse.maven:pizzacraft-292056:2986635')
+
+    runtimeOnly "mezz:jei:4.25.5"
 }

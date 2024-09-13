@@ -8,7 +8,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import surreal.ttweaker.utils.ComparableStack;
 import surreal.ttweaker.utils.HashStrategies;
 
 import java.util.Map;
@@ -50,7 +49,6 @@ public class BrewingFuel {
     }
 
     public static boolean hasKey(ItemStack stack) {
-        ComparableStack c = new ComparableStack(stack);
         return map.containsKey(stack);
     }
 
