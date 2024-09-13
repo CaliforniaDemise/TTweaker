@@ -32,6 +32,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
         put("com.tiviacz.pizzacraft.blocks.BlockPizza", this::transformBlockPizza);
         put("com.tiviacz.pizzacraft.blocks.BlockChoppingBoard", this::transformChoppingBoard);
         put("com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardUtils", this::transformChoppingBoardUtils);
+        put("com.tiviacz.pizzacraft.proxy.CommonProxy", this::transformCommonProxy);
     }
 
     @Override
@@ -43,6 +44,35 @@ public class TTTransformer implements IClassTransformer, Opcodes {
 
     private void put(String name, Function<byte[], byte[]> function) {
         this.functions.put(name, function);
+    }
+
+    private byte[] transformCommonProxy(byte[] basicClass) {
+
+        ClassReader reader = new ClassReader(basicClass);
+        ClassNode cls = new ClassNode();
+        reader.accept(cls, 0);
+
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals("preInitRegistries")) {
+                AbstractInsnNode node = method.instructions.getLast();
+                while (node.getOpcode() != RETURN) node = node.getPrevious();
+                method.instructions.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "com/tiviacz/pizzacraft/init/OreDictInit", "registerOres", "()V", false));
+            }
+            else if (method.name.equals("initRegistries")) {
+               Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+               while (iterator.hasNext()) {
+                   AbstractInsnNode node = iterator.next();
+                   if (node.getOpcode() == INVOKESTATIC && ((MethodInsnNode) node).name.equals("registerOres")) {
+                       iterator.remove();
+                       break;
+                   }
+               }
+            }
+        }
+
+        ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+        cls.accept(writer);
+        return writer.toByteArray();
     }
 
     private byte[] transformChoppingBoardRecipes(byte[] basicClass) {
