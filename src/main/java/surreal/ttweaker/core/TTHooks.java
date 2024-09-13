@@ -19,6 +19,7 @@ public class TTHooks {
     }
 
     public static boolean isPeel(ItemStack stack) {
+        if (stack.isEmpty()) return false;
         if (stack.getItem() == ModItems.PEEL) return true;
         int[] oreIds = OreDictionary.getOreIDs(stack);
         for (int id : oreIds) {
