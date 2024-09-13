@@ -1,14 +1,12 @@
 package surreal.ttweaker.core;
 
 import com.tiviacz.pizzacraft.init.ModItems;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraftforge.oredict.OreDictionary;
 import surreal.ttweaker.crafttweaker.BrewingFuel;
-import surreal.ttweaker.utils.HashStrategies;
 import surreal.ttweaker.utils.ItemStackMap;
 
 import javax.annotation.Nonnull;
@@ -32,6 +30,7 @@ public class TTHooks {
     }
 
     public static boolean isKnife(ItemStack stack) {
+        if (stack.isEmpty()) return false;
         if (stack.getItem() == ModItems.KNIFE) return true;
         int[] oreIds = OreDictionary.getOreIDs(stack);
         for (int id : oreIds) {
