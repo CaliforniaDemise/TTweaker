@@ -8,7 +8,7 @@ Bakeware.remove(<pizzacraft:raw_pizza_0>); // Removes recipe based on output
 Bakeware.removeAll(); // Removes all the default recipes
 
 // Mortar Recipes
-Mortar.addRecipe(<minecraft:stone>, [<minecraft:diamond>, <ore:ingotGold>]); // Adds a recipe. Up to 2 inputs. Does not allow OR-Ingredients
+Mortar.addRecipe(<minecraft:stone>, 8, [<minecraft:diamond>, <ore:ingotGold>]); // Adds a recipe. Up to 2 inputs. Does not allow OR-Ingredients
 Mortar.remove(<pizzacraft:flour_corn>); // Removes recipe based on output
 Mortar.removeAll(); // Removes all the default recipes
 
