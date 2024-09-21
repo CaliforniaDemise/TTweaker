@@ -1,7 +1,5 @@
 package surreal.ttweaker.core.transformers;
 
-// TODO Add support for that cooker
-
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.tree.*;
@@ -9,6 +7,7 @@ import surreal.ttweaker.core.Dumbformer;
 
 import java.util.Iterator;
 
+// TODO Add support for that cooker
 /**
  * Add support for PizzaCraft
  **/
