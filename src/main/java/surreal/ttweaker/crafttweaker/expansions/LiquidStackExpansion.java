@@ -12,6 +12,7 @@ import stanhebben.zenscript.annotations.ZenMethodStatic;
 
 @ZenRegister
 @ZenExpansion("crafttweaker.liquid.ILiquidStack")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class LiquidStackExpansion {
 
     @ZenMethod

@@ -1,6 +1,7 @@
 package surreal.ttweaker.crafttweaker;
 
 import crafttweaker.CraftTweakerAPI;
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IItemStack;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
@@ -12,7 +13,9 @@ import surreal.ttweaker.utils.HashStrategies;
 
 import java.util.Map;
 
+@ZenRegister
 @ZenClass("mods.ttweaker.BrewingFuel")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class BrewingFuel {
 
     private static final Map<ItemStack, Integer> map = new Object2IntOpenCustomHashMap<>(HashStrategies.ITEMSTACK_STRATEGY);
@@ -49,9 +52,8 @@ public class BrewingFuel {
     }
 
     public static boolean hasKey(ItemStack stack) {
-        return map.containsKey(stack);
+        return !stack.isEmpty() && map.containsKey(stack);
     }
-
 
     static {
         map.put(new ItemStack(Items.BLAZE_POWDER), 20);

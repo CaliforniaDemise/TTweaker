@@ -16,6 +16,7 @@ import java.util.Map;
 @ZenRegister
 @ModOnly("pizzacraft")
 @ZenClass("mods.pizzacraft.ChoppingBoard")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class ChoppingBoard {
 
     @ZenMethod

@@ -13,6 +13,7 @@ import vazkii.psi.api.PsiAPI;
 @ZenRegister
 @ModOnly("psi")
 @ZenClass("mods.psi.Trick")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class PsiTrick {
 
     @ZenMethod

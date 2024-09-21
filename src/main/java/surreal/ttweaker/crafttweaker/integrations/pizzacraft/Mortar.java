@@ -16,6 +16,7 @@ import surreal.ttweaker.utils.CTUtils;
 @ZenRegister
 @ModOnly("pizzacraft")
 @ZenClass("mods.pizzacraft.Mortar")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class Mortar {
 
     @ZenMethod

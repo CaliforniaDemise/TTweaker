@@ -9,11 +9,12 @@ import java.util.Map;
 @IFMLLoadingPlugin.Name("TTweaker")
 @IFMLLoadingPlugin.MCVersion(ForgeVersion.mcVersion)
 @IFMLLoadingPlugin.DependsOn("crafttweaker")
+@SuppressWarnings("unused") // Loads with reflection
 public class TTCore implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[0];
+        return null;
     }
 
     @Override
@@ -28,9 +29,7 @@ public class TTCore implements IFMLLoadingPlugin {
     }
 
     @Override
-    public void injectData(Map<String, Object> data) {
-
-    }
+    public void injectData(Map<String, Object> data) {}
 
     @Override
     public String getAccessTransformerClass() {

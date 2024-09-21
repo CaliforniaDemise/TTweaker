@@ -1,5 +1,6 @@
 package surreal.ttweaker.crafttweaker.expansions;
 
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.block.IBlockDefinition;
 import crafttweaker.api.block.IBlockState;
 import crafttweaker.api.item.IItemDefinition;
@@ -8,7 +9,9 @@ import net.minecraft.block.Block;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ZenRegister
 @ZenExpansion("crafttweaker.item.IItemDefinition")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class ItemDefinitionExpansion {
 
     @ZenMethod

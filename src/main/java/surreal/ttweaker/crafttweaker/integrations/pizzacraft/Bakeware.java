@@ -17,6 +17,7 @@ import surreal.ttweaker.utils.CTUtils;
 @ZenRegister
 @ModOnly("pizzacraft")
 @ZenClass("mods.pizzacraft.Bakeware")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class Bakeware {
 
     @ZenMethod

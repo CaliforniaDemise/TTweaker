@@ -1,12 +1,15 @@
 package surreal.ttweaker.crafttweaker.expansions;
 
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.liquid.ILiquidDefinition;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraftforge.fluids.FluidRegistry;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+@ZenRegister
 @ZenExpansion("crafttweaker.liquid.ILiquidDefinition")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class LiquidDefinitionExpansion {
 
     @ZenMethod

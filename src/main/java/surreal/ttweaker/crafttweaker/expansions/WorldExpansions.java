@@ -1,5 +1,6 @@
 package surreal.ttweaker.crafttweaker.expansions;
 
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.entity.IEntity;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import crafttweaker.api.world.IBlockPos;
@@ -10,7 +11,9 @@ import stanhebben.zenscript.annotations.ZenMethod;
 
 import java.util.List;
 
+@ZenRegister
 @ZenExpansion("crafttweaker.world.IWorld")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class WorldExpansions {
 
     @ZenMethod

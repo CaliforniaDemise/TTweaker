@@ -1,12 +1,15 @@
 package surreal.ttweaker.crafttweaker.expansions;
 
+import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.block.IBlockDefinition;
 import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.block.Block;
 import stanhebben.zenscript.annotations.ZenExpansion;
 import stanhebben.zenscript.annotations.ZenMethodStatic;
 
+@ZenRegister
 @ZenExpansion("crafttweaker.game.IGame")
+@SuppressWarnings("unused") // Used by CraftTweaker
 public class GameExpansion {
 
     @ZenMethodStatic
