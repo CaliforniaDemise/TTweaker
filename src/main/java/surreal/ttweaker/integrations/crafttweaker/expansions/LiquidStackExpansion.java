@@ -1,4 +1,4 @@
-package surreal.ttweaker.crafttweaker.expansions;
+package surreal.ttweaker.integrations.crafttweaker.expansions;
 
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.data.IData;

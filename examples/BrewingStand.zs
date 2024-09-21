@@ -6,5 +6,6 @@ BrewingFuel.addFuel(<minecraft:stick>);
 // You can specify time too
 BrewingFuel.addFuel(<minecraft:dirt>, 50);
 
-// Removes all fuels (blaze powder)
-BrewingFuel.clear();
+// Removes all fuels
+BrewingFuel.clear(); // @Deprecated. Use BrewingFuel.removeAll()
+BrewingFuel.removeAll();

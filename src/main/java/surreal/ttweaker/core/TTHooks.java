@@ -4,7 +4,7 @@ import com.tiviacz.pizzacraft.init.ModItems;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraftforge.oredict.OreDictionary;
-import surreal.ttweaker.crafttweaker.BrewingFuel;
+import surreal.ttweaker.integrations.vanilla.BrewingFuel;
 import surreal.ttweaker.utils.ItemStackMap;
 
 import java.util.Map;
@@ -15,7 +15,7 @@ public class TTHooks {
 
     // Brewing Stand Fuels
     public static void BrewingFuel$handleFuel(TileEntityBrewingStand tile, ItemStack fuel) {
-        int time = BrewingFuel.getTime(fuel);
+        int time = BrewingFuel.getBurnTime(fuel);
         if (time > 0) {
             tile.setField(1, time);
             fuel.shrink(1);

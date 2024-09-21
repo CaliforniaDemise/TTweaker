@@ -32,9 +32,9 @@ dependencies {
     // Psi
     if (project.use_psi.toBoolean()) {
         implementation('curse.maven:autoreglib-250363:2746011')
-        implementation(psi)
+        implementation rfg.deobf(psi)
     }
-    else compileOnly(psi)
+    else compileOnly rfg.deobf(psi)
 
     // Pizzacraft
     if (project.use_pizzacraft.toBoolean()) implementation rfg.deobf(pizzacraft)
