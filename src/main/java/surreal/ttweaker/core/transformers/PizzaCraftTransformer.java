@@ -150,27 +150,4 @@ public class PizzaCraftTransformer extends Dumbformer {
         }
         return write(cls);
     }
-
-    public static byte[] transformCraftingUtils(byte[] basicClass) {
-        ClassNode cls = read(basicClass);
-        for (MethodNode method : cls.methods) {
-            if (method.name.equals("onTake")) {
-                Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
-                while (iterator.hasNext()) {
-                    AbstractInsnNode node = iterator.next();
-                    if (node.getOpcode() == INVOKEVIRTUAL && ((MethodInsnNode) node).name.equals(getName("decrStackSize", ""))) {
-                        node = node.getNext();
-                        for (int i = 0; i < 5; i++) {
-                            node = node.getPrevious();
-                            method.instructions.remove(node.getNext());
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-//        writeClass(cls);
-        return write(cls);
-    }
 }

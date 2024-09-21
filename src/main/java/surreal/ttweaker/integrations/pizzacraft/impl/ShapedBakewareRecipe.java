@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class ShapedBakewareRecipe extends BakewareRecipe {
 
@@ -18,13 +17,14 @@ public class ShapedBakewareRecipe extends BakewareRecipe {
         this.width = width;
     }
 
-    // TODO Better exceptions
     public static ShapedBakewareRecipe create(ItemStack output, String[] recipeMap, Object... input) {
-        if (recipeMap.length == 0 || recipeMap.length > 3 || (input.length & 1) == 1) throw new RuntimeException("Stupid ass");
+        if (recipeMap.length == 0) throw new RuntimeException("Map array can't empty");
+        if (recipeMap.length > 3) throw new RuntimeException("Map array can't be larger than 3");
+        if ((input.length & 1) == 1) throw new RuntimeException("Problem has occurred while trying to read given inputs");
         Int2ObjectMap<Object> inputMap = new Int2ObjectOpenHashMap<>();
         for (int i = 0; i < input.length; i += 2) {
             char c = (char) input[i];
-            if (c == ' ') throw new RuntimeException("Stupid ass");
+            if (c == ' ') throw new RuntimeException("<space> character is already mapped to empty stack");
             Object o = input[i + 1];
             inputMap.put(c, o);
         }
@@ -33,7 +33,7 @@ public class ShapedBakewareRecipe extends BakewareRecipe {
         Object[] inputs = new Object[height * width];
         for (int h = 0; h < height; h++) {
             String map = recipeMap[h];
-            if (map.length() != width) throw new RuntimeException("Stupid ass");
+            if (map.length() != width) throw new RuntimeException("Recipe map strings should have the same length");
             for (int w = 0; w < width; w++) {
                 int slot = h + (w + (h * (width - 1)));
                 char c = map.charAt(w);
