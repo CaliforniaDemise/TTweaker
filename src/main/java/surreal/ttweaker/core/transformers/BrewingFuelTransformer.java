@@ -6,7 +6,6 @@ import surreal.ttweaker.core.Dumbformer;
 
 import java.util.Iterator;
 
-// TODO Check and add support for custom brewing stand machines. (Like Industrial Foregoing)
 /**
  * Allow adding custom fuels for Brewing Stand
  **/
