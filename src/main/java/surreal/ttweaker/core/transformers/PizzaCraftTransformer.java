@@ -159,4 +159,26 @@ public class PizzaCraftTransformer extends Dumbformer {
         }
         return write(cls);
     }
+
+    public static byte[] transformMortarRecipeUtils(byte[] basicClass) {
+        ClassNode cls = read(basicClass);
+        Iterator<MethodNode> iterator = cls.methods.iterator();
+        String desc = "";
+        while (iterator.hasNext()) {
+            MethodNode method = iterator.next();
+            if (method.name.equals("onTake")) {
+                desc = method.desc;
+                iterator.remove();
+                break;
+            }
+        }
+        { // onTake
+            MethodVisitor m = cls.visitMethod(ACC_PUBLIC | ACC_STATIC, "onTake", desc, null, null);
+            m.visitVarInsn(ALOAD, 0);
+            m.visitVarInsn(ALOAD, 1);
+            m.visitMethodInsn(INVOKESTATIC, "surreal/ttweaker/core/TTHooks", "PizzaCraft$MortarOnTake", desc, false);
+            m.visitInsn(RETURN);
+        }
+        return write(cls);
+    }
 }

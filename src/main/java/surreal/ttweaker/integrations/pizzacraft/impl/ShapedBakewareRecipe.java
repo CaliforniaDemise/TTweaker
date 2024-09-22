@@ -6,20 +6,25 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ShapedBakewareRecipe extends BakewareRecipe {
 
     protected final int height, width;
 
     // Inputs length needs to be always 9.
-    protected ShapedBakewareRecipe(ItemStack output, int height, int width, Object[] input) {
+    protected ShapedBakewareRecipe(@Nonnull ItemStack output, int height, int width, Object[] input) {
         super(output, input);
         this.height = height;
         this.width = width;
     }
 
-    public static ShapedBakewareRecipe create(ItemStack output, String[] recipeMap, Object... input) {
+    public static ShapedBakewareRecipe create(@Nonnull ItemStack output, String[] recipeMap, Object... input) {
+        if (output.isEmpty()) throw new RuntimeException("Output can't be empty");
         if (recipeMap.length == 0) throw new RuntimeException("Map array can't empty");
         if (recipeMap.length > 3) throw new RuntimeException("Map array can't be larger than 3");
+        if (input.length == 0) throw new RuntimeException("There should at least be one input");
+        if (input.length > 18) throw new RuntimeException("https://www.youtube.com/watch?v=BNxlx0zVDwk");
         if ((input.length & 1) == 1) throw new RuntimeException("Problem has occurred while trying to read given inputs");
         Int2ObjectMap<Object> inputMap = new Int2ObjectOpenHashMap<>();
         for (int i = 0; i < input.length; i += 2) {

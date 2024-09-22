@@ -28,13 +28,11 @@ public class ShapelessBakewareRecipeCrT extends ShapelessBakewareRecipe {
             if (!invStack.isEmpty()) {
                 for (int ingI = 0; ingI < this.input.length; ingI++) {
                     Object ing = this.input[ingI];
-                    if (this.isSame(invStack, ing) && !inputCheck[ingI]) {
+                    IIngredient ingredient = (IIngredient) ing;
+                    if (!inputCheck[ingI] && ingredient.hasNewTransformers() && this.isSame(invStack, ing)) {
                         inputCheck[ingI] = true;
-                        IIngredient ingredient = (IIngredient) ing;
-                        if (ingredient.hasNewTransformers()) {
-                            ItemStack remaining = CraftTweakerMC.getItemStack(ingredient.applyNewTransform(CraftTweakerMC.getIItemStack(invStack)));
-                            list.set(i, remaining);
-                        }
+                        ItemStack remaining = CraftTweakerMC.getItemStack(ingredient.applyNewTransform(CraftTweakerMC.getIItemStack(invStack)));
+                        list.set(i, remaining);
                     }
                 }
             }

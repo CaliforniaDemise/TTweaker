@@ -1,8 +1,6 @@
 package surreal.ttweaker.integrations.pizzacraft;
 
-import com.tiviacz.pizzacraft.crafting.mortar.IMortarRecipe;
 import com.tiviacz.pizzacraft.crafting.mortar.MortarRecipeManager;
-import crafttweaker.CraftTweakerAPI;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
 import crafttweaker.api.item.IIngredient;
@@ -11,25 +9,30 @@ import crafttweaker.api.minecraft.CraftTweakerMC;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
-import surreal.ttweaker.utils.CTUtils;
+import surreal.ttweaker.integrations.pizzacraft.crt.ShapedMortarRecipeCrT;
+import surreal.ttweaker.integrations.pizzacraft.crt.ShapelessMortarRecipeCrT;
+import surreal.ttweaker.integrations.pizzacraft.impl.ShapedMortarRecipe;
+import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessMortarRecipe;
 
 @SuppressWarnings("unused") // Used by GroovyScript / CraftTweaker
 public class Mortar {
 
-    // Inputs array can only have 2 objects.
-    // Inputs allow ItemStack, String (ore), Block, Item.
-    public static void addRecipe(ItemStack output, int duration, Object... inputs) {
+    // Allows 4 inputs
+    // They should be putted in same order as the recipe.
+    public static void addShaped(ItemStack output, int duration, Object... inputs) {
         MortarRecipeManager manager = getManager();
-        manager.addShapelessRecipe(output, duration, inputs);
+        manager.addRecipe(ShapedMortarRecipe.create(output, duration, inputs));
+    }
+
+    // Allows 4 inputs
+    public static void addShapeless(ItemStack output, int duration, Object... inputs) {
+        MortarRecipeManager manager = getManager();
+        manager.addRecipe(ShapelessMortarRecipe.create(output, duration, inputs));
     }
 
     public static void remove(ItemStack output) {
         MortarRecipeManager manager = getManager();
-        for (IMortarRecipe recipe : manager.getRecipeList()) {
-            if (ItemStack.areItemStacksEqual(recipe.getRecipeOutput(), output)) {
-                manager.removeRecipe(recipe);
-            }
-        }
+        manager.getRecipeList().removeIf(r -> ItemStack.areItemStacksEqual(r.getRecipeOutput(), output));
     }
 
     public static void removeAll() {
@@ -42,21 +45,26 @@ public class Mortar {
     public static class CraftTweaker {
 
         @ZenMethod
+        public static void addShaped(IItemStack output, int duration, IIngredient[] inputs) {
+            MortarRecipeManager manager = getManager();
+            manager.addRecipe(ShapedMortarRecipeCrT.create(output, duration, (Object[]) inputs));
+        }
+
+        @ZenMethod
+        public static void addShapeless(IItemStack output, int duration, IIngredient[] inputs) {
+            addRecipe(output, duration, inputs);
+        }
+
+        @Deprecated
+        @ZenMethod
         public static void addRecipe(IItemStack output, int duration, IIngredient[] inputs) {
-            if (inputs.length == 0) {
-                CraftTweakerAPI.getLogger().logError("Insufficient amount of inputs!");
-                return;
-            }
-            else if (inputs.length > 2) {
-                CraftTweakerAPI.getLogger().logError("Amount of inputs can only be between 1 and 9!");
-                return;
-            }
-            Mortar.addRecipe(CraftTweakerMC.getItemStack(output), duration, CTUtils.getObjects(inputs));
+            MortarRecipeManager manager = getManager();
+            manager.addRecipe(ShapelessMortarRecipeCrT.create(output, duration, (Object[]) inputs));
         }
 
         @ZenMethod
         public static void remove(IItemStack output) {
-
+            Mortar.remove(CraftTweakerMC.getItemStack(output));
         }
 
         @ZenMethod

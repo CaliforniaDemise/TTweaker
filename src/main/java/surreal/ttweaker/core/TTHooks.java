@@ -1,12 +1,19 @@
 package surreal.ttweaker.core;
 
 import com.tiviacz.pizzacraft.init.ModItems;
+import com.tiviacz.pizzacraft.tileentity.TileEntityMortarAndPestle;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBrewingStand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import surreal.ttweaker.integrations.vanilla.BrewingFuel;
 import surreal.ttweaker.utils.ItemStackMap;
 
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused") // Used by transformers
@@ -54,5 +61,24 @@ public class TTHooks {
             }
         }
         return false;
+    }
+
+    public static void PizzaCraft$MortarOnTake(TileEntityMortarAndPestle te, List<ItemStack> list) {
+        World world = te.getWorld();
+        BlockPos pos = te.getPos();
+        ItemStackHandler inv = te.getInventory();
+        for (int i = 0; i < inv.getSlots(); i++) {
+            ItemStack invStack = inv.getStackInSlot(i);
+            if (invStack.isEmpty()) continue;
+            invStack.shrink(1);
+            ItemStack remaining = list.get(i);
+            if (!remaining.isEmpty()) {
+                remaining = inv.insertItem(i, remaining, false);
+            }
+            if (!remaining.isEmpty() && !world.isRemote) {
+                EntityItem entity = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, remaining);
+                world.spawnEntity(entity);
+            }
+        }
     }
 }

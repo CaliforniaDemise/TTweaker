@@ -4,13 +4,18 @@ import com.tiviacz.pizzacraft.gui.inventory.InventoryCraftingImproved;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 public class ShapelessBakewareRecipe extends BakewareRecipe {
 
-    protected ShapelessBakewareRecipe(ItemStack output, Object[] input) {
+    protected ShapelessBakewareRecipe(@Nonnull ItemStack output, Object[] input) {
         super(output, input);
     }
 
-    public static ShapelessBakewareRecipe create(ItemStack output, Object... input) {
+    public static ShapelessBakewareRecipe create(@Nonnull ItemStack output, Object... input) {
+        if (output.isEmpty()) throw new RuntimeException("Output can't be empty");
+        if (input.length == 0) throw new RuntimeException("There should at least be one input");
+        if (input.length > 9) throw new RuntimeException("There can't be more than nine inputs");
         return new ShapelessBakewareRecipe(output, input);
     }
 
