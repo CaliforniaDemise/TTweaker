@@ -227,4 +227,30 @@ public class PizzaCraftTransformer extends Dumbformer {
         }
         return write(cls);
     }
+
+    public static byte[] transformMortarRecipeCategory(byte[] basicClass) {
+        ClassNode cls = read(basicClass);
+        { // shaped | Shaped recipe drawable
+            cls.visitField(ACC_PUBLIC | ACC_FINAL, "shaped", "Lmezz/jei/api/gui/IDrawable;", null, null);
+        }
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals("<init>")) {
+                AbstractInsnNode node = method.instructions.getLast();
+                while (node.getOpcode() != RETURN) node = node.getPrevious();
+                InsnList list = new InsnList();
+                list.add(new VarInsnNode(ALOAD, 0));
+                list.add(new VarInsnNode(ALOAD, 1));
+                list.add(new FieldInsnNode(GETSTATIC, cls.name, "BACKGROUND", "Lnet/minecraft/util/ResourceLocation;"));
+                list.add(new IntInsnNode(BIPUSH, 10)); // 10 56
+                list.add(new IntInsnNode(BIPUSH, 56)); // 52 104
+                list.add(new IntInsnNode(BIPUSH, 52));
+                list.add(new IntInsnNode(BIPUSH, 104));
+                list.add(new MethodInsnNode(INVOKEINTERFACE, "net/jei/api/IGuiHelper", "createDrawable", "(Lnet/minecraft/util/ResourceLocation;IIII)Lmezz/jei/api/gui/IDrawableStatic;", true));
+                list.add(new FieldInsnNode(PUTFIELD, cls.name, "shaped", "Lmezz/jei/api/gui/IDrawable;"));
+                method.instructions.insertBefore(node, list);
+                break;
+            }
+        }
+        return write(cls);
+    }
 }
