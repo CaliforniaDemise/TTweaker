@@ -181,4 +181,24 @@ public class PizzaCraftTransformer extends Dumbformer {
         }
         return write(cls);
     }
+
+    public static byte[] transformPizzaCraftPlugin(byte[] basicClass) {
+        ClassNode cls = read(basicClass);
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals("handleBakewareRecipes")) {
+                AbstractInsnNode node = method.instructions.getLast();
+                while (node.getOpcode() != RETURN) node = node.getPrevious();
+                InsnList list = new InsnList();
+                list.add(new VarInsnNode(ALOAD, 1));
+                list.add(new VarInsnNode(ALOAD, 2));
+                list.add(hook("PizzaCraft$handleBakewareRecipes", method.desc));
+                method.instructions.insertBefore(node, list);
+            }
+            else if (method.name.equals("handleMortarAndPestleRecipes")) {
+
+                break;
+            }
+        }
+        return write(cls);
+    }
 }

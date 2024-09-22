@@ -2,14 +2,24 @@ package surreal.ttweaker.core;
 
 import com.tiviacz.pizzacraft.init.ModItems;
 import com.tiviacz.pizzacraft.tileentity.TileEntityMortarAndPestle;
+import mezz.jei.api.IModRegistry;
+import mezz.jei.api.gui.ICraftingGridHelper;
+import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.ingredients.VanillaTypes;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import surreal.ttweaker.integrations.pizzacraft.impl.BakewareRecipe;
+import surreal.ttweaker.integrations.pizzacraft.impl.ShapedBakewareRecipe;
+import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessBakewareRecipe;
+import surreal.ttweaker.integrations.pizzacraft.jei.BakewareWrapper;
+import surreal.ttweaker.integrations.pizzacraft.jei.ShapedBakewareWrapper;
 import surreal.ttweaker.integrations.vanilla.BrewingFuel;
 import surreal.ttweaker.utils.ItemStackMap;
 
@@ -79,6 +89,20 @@ public class TTHooks {
                 EntityItem entity = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, remaining);
                 world.spawnEntity(entity);
             }
+        }
+    }
+
+    public static void PizzaCraft$handleBakewareRecipes(IModRegistry registry, String category) {
+        registry.handleRecipes(BakewareRecipe.class, (recipe) -> {
+            if (recipe instanceof ShapedBakewareRecipe) return new ShapedBakewareWrapper(registry.getJeiHelpers(), recipe, recipe.getInput());
+            else return new BakewareWrapper(registry.getJeiHelpers(), recipe, recipe.getInput());
+        }, category);
+    }
+
+    public static void PizzaCraft$setRecipe(IRecipeLayout layout, IRecipeWrapper wrapper, IIngredients ingredients, ICraftingGridHelper helper) {
+        if (wrapper instanceof ShapedBakewareRecipe) {
+            ShapedBakewareRecipe recipe = (ShapedBakewareRecipe) wrapper;
+            helper.setInputs(layout.getItemStacks(), ingredients.getInputs(VanillaTypes.ITEM), recipe.getRecipeWidth(), recipe.getRecipeHeight());
         }
     }
 }

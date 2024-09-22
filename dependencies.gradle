@@ -14,12 +14,17 @@ repositories {
 }
 
 dependencies {
+    var jei = 'mezz:jei:4.25.5'
     var ct = 'curse.maven:crafttweaker-239197:4566528'
     var grs = 'com.cleanroommc:groovyscript:1.1.3'
     var psi = 'curse.maven:psi-241665:3085917'
     var pizzacraft = 'curse.maven:pizzacraft-292056:2986635'
 
     var mixins = project.use_groovyscript.toBoolean()
+
+    // JEI
+    if (project.use_jei.toBoolean()) implementation rfg.deobf(jei)
+    else compileOnly rfg.deobf(jei)
 
     // CraftTweaker
     if (project.use_crafttweaker.toBoolean()) implementation(ct)
@@ -39,8 +44,6 @@ dependencies {
     // Pizzacraft
     if (project.use_pizzacraft.toBoolean()) implementation rfg.deobf(pizzacraft)
     else compileOnly rfg.deobf(pizzacraft)
-
-    runtimeOnly "mezz:jei:4.25.5"
 
     // Mixins
     if (mixins) {

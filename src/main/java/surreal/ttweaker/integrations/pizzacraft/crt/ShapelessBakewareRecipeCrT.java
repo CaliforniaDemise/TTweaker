@@ -41,6 +41,17 @@ public class ShapelessBakewareRecipeCrT extends ShapelessBakewareRecipe {
     }
 
     @Override
+    public Object[] getInput() {
+        Object[] objects = new Object[this.input.length];
+        for (int i = 0; i < this.input.length; i++) {
+            Object o = this.input[i];
+            if (o == null) objects[i] = null;
+            else objects[i] = CraftTweakerMC.getIngredient((IIngredient) o);
+        }
+        return objects;
+    }
+
+    @Override
     protected boolean isSame(ItemStack stack, Object input) {
         Ingredient ing = CraftTweakerMC.getIngredient((IIngredient) input);
         return super.isSame(stack, ing);

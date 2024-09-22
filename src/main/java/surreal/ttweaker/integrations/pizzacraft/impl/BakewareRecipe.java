@@ -29,6 +29,10 @@ public abstract class BakewareRecipe implements IBakewareRecipe {
         return this.output;
     }
 
+    public Object[] getInput() {
+        return this.input;
+    }
+
     // Stack shouldn't be empty
     protected boolean isSame(ItemStack stack, Object input) {
         if (stack.isEmpty()) {

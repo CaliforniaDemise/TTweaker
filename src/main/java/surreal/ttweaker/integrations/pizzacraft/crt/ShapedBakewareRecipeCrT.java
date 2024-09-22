@@ -37,7 +37,7 @@ public class ShapedBakewareRecipeCrT extends ShapedBakewareRecipe {
             for (int w = 0; w < width; w++) {
                 int slot = h + (w + (h * (width - 1)));
                 char c = map.charAt(w);
-                if (c == ' ') inputs[slot] = ItemStack.EMPTY;
+                if (c == ' ') inputs[slot] = null;
                 else inputs[slot] = inputMap.get(c);
             }
         }
@@ -62,7 +62,7 @@ public class ShapedBakewareRecipeCrT extends ShapedBakewareRecipe {
                 invSlot = start + slot;
                 ItemStack invStack = inv.getStackInSlot(invSlot);
                 Object inputObj = this.input[slot];
-                if (isSame(invStack, inputObj)) {
+                if (!invStack.isEmpty() && isSame(invStack, inputObj)) {
                     IIngredient ing = (IIngredient) inputObj;
                     if (ing.hasNewTransformers()) {
                         list.set(invSlot, CraftTweakerMC.getItemStack(ing.applyNewTransform(CraftTweakerMC.getIItemStack(invStack))));
@@ -74,7 +74,19 @@ public class ShapedBakewareRecipeCrT extends ShapedBakewareRecipe {
     }
 
     @Override
+    public Object[] getInput() {
+        Object[] objects = new Object[this.input.length];
+        for (int i = 0; i < this.input.length; i++) {
+            Object o = this.input[i];
+            if (o == null) objects[i] = null;
+            else objects[i] = CraftTweakerMC.getIngredient((IIngredient) o);
+        }
+        return objects;
+    }
+
+    @Override
     protected boolean isSame(ItemStack stack, Object input) {
+        if (input == null) return stack.isEmpty();
         Ingredient ing = CraftTweakerMC.getIngredient((IIngredient) input);
         return super.isSame(stack, ing);
     }

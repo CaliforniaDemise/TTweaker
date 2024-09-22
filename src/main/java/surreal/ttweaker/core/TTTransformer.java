@@ -22,6 +22,8 @@ public class TTTransformer implements IClassTransformer, Opcodes {
             case "com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes": return PizzaCraftTransformer.transformChoppingBoardRecipes(basicClass);
             case "com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardUtils": return PizzaCraftTransformer.transformChoppingBoardUtils(basicClass);
             case "com.tiviacz.pizzacraft.crafting.mortar.MortarRecipeUtils": return PizzaCraftTransformer.transformMortarRecipeUtils(basicClass);
+            case "com.tiviacz.pizzacraft.compat.jei.PizzaCraftPlugin": return PizzaCraftTransformer.transformPizzaCraftPlugin(basicClass);
+//            case "com.tiviacz.pizzacraft.compat.jei.bakeware.BakewareRecipeCategory": return PizzaCraftTransformer.transformBakewareRecipeCategory(basicClass);
         }
         return basicClass;
     }

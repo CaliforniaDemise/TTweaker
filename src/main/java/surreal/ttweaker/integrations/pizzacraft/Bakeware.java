@@ -17,6 +17,7 @@ import surreal.ttweaker.integrations.pizzacraft.impl.ShapedBakewareRecipe;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessBakewareRecipe;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SuppressWarnings("unused") // Used by CraftTweaker

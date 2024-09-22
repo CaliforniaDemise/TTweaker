@@ -21,22 +21,34 @@ public class ShapelessBakewareRecipe extends BakewareRecipe {
 
     @Override
     public boolean matches(InventoryCraftingImproved inv, World world) {
-        boolean check = false;
         int count = 0;
+        boolean[] check = new boolean[this.input.length];
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack invStack = inv.getStackInSlot(i);
             if (!invStack.isEmpty()) {
-                boolean toCheck = false;
+                int a = 0;
                 for (Object ing : this.input) {
-                    toCheck = isSame(invStack, ing);
-                    if (toCheck) break;
+                    boolean b = isSame(invStack, ing);
+                    if (b) {
+                        if (!check[a]) {
+                            check[a] = true;
+                            break;
+                        }
+                    }
+                    a++;
                 }
-                if (!toCheck) return false;
-                check = toCheck;
                 count++;
             }
         }
-        return check && count == this.input.length;
+        return this.ass(check) && count == this.input.length;
+    }
+
+    private boolean ass(boolean[] check) {
+        boolean out = true;
+        for (boolean b : check) {
+            out &= b;
+        }
+        return out;
     }
 
     @Override
@@ -48,4 +60,6 @@ public class ShapelessBakewareRecipe extends BakewareRecipe {
     public int getRecipeSize() {
         return this.input.length;
     }
+
+
 }
