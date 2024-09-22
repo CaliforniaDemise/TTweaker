@@ -42,6 +42,10 @@ public abstract class MortarRecipe implements IMortarRecipe {
         return this.input.length;
     }
 
+    public Object[] getInput() {
+        return input;
+    }
+
     // Stack shouldn't be empty
     protected boolean isSame(ItemStack stack, Object input) {
         if (stack.isEmpty()) return false;

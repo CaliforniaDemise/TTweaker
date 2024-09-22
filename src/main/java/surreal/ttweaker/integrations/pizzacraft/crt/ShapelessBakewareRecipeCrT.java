@@ -45,8 +45,7 @@ public class ShapelessBakewareRecipeCrT extends ShapelessBakewareRecipe {
         Object[] objects = new Object[this.input.length];
         for (int i = 0; i < this.input.length; i++) {
             Object o = this.input[i];
-            if (o == null) objects[i] = null;
-            else objects[i] = CraftTweakerMC.getIngredient((IIngredient) o);
+            objects[i] = CraftTweakerMC.getIngredient((IIngredient) o);
         }
         return objects;
     }

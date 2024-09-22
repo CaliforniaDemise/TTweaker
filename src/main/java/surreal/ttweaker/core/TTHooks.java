@@ -16,9 +16,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.oredict.OreDictionary;
 import surreal.ttweaker.integrations.pizzacraft.impl.BakewareRecipe;
+import surreal.ttweaker.integrations.pizzacraft.impl.MortarRecipe;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapedBakewareRecipe;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessBakewareRecipe;
 import surreal.ttweaker.integrations.pizzacraft.jei.BakewareWrapper;
+import surreal.ttweaker.integrations.pizzacraft.jei.MortarWrapper;
 import surreal.ttweaker.integrations.pizzacraft.jei.ShapedBakewareWrapper;
 import surreal.ttweaker.integrations.vanilla.BrewingFuel;
 import surreal.ttweaker.utils.ItemStackMap;
@@ -99,10 +101,7 @@ public class TTHooks {
         }, category);
     }
 
-    public static void PizzaCraft$setRecipe(IRecipeLayout layout, IRecipeWrapper wrapper, IIngredients ingredients, ICraftingGridHelper helper) {
-        if (wrapper instanceof ShapedBakewareRecipe) {
-            ShapedBakewareRecipe recipe = (ShapedBakewareRecipe) wrapper;
-            helper.setInputs(layout.getItemStacks(), ingredients.getInputs(VanillaTypes.ITEM), recipe.getRecipeWidth(), recipe.getRecipeHeight());
-        }
+    public static void PizzaCraft$handleMortarAndPestleRecipes(IModRegistry registry, String category) {
+        registry.handleRecipes(MortarRecipe.class, (recipe) -> new MortarWrapper(registry.getJeiHelpers(), recipe, recipe.getInput()), category);
     }
 }

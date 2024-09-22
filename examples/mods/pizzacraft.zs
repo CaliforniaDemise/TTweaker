@@ -25,9 +25,9 @@ Bakeware.removeAll(); // Removes all the default recipes
 Mortar.addShaped(<minecraft:cobblestone>, 6, [<minecraft:stone> | <minecraft:stone:1> | <minecraft:stone:3> | <minecraft:stone:5>, <pizzacraft:onion_slice>]);
 
 // Shapeless Recipes. Up to 4 inputs
-Mortar.addShapeless(<minecraft:wool:1>, 6, [<minecraft:wool>, <minecraft:dirt>]);
+Mortar.addShapeless(<minecraft:wool:1>, 6, [<minecraft:wool>, <minecraft:dirt>, <minecraft:stone>]);
 Mortar.addShapeless(<minecraft:golden_apple>, 4, [<minecraft:apple>, <minecraft:water_bucket>.noReturn() | <liquid:water> * 1000]);
-Mortar.addRecipe(<minecraft:stone>, 8, [<minecraft:diamond> | <minecraft:dirt>, <ore:ingotGold>]);
+Mortar.addRecipe(<minecraft:stone>, 8, [<minecraft:diamond> | <minecraft:dirt>, <ore:ingotGold>, <minecraft:coal>, <minecraft:cobblestone>]);
 
 // Removing Recipes
 Mortar.remove(<pizzacraft:flour_corn>); // Removes recipe based on output

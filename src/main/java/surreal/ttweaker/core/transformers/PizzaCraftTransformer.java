@@ -195,7 +195,33 @@ public class PizzaCraftTransformer extends Dumbformer {
                 method.instructions.insertBefore(node, list);
             }
             else if (method.name.equals("handleMortarAndPestleRecipes")) {
+                AbstractInsnNode node = method.instructions.getLast();
+                while (node.getOpcode() != RETURN) node = node.getPrevious();
+                InsnList list = new InsnList();
+                list.add(new VarInsnNode(ALOAD, 1));
+                list.add(new VarInsnNode(ALOAD, 2));
+                list.add(hook("PizzaCraft$handleMortarAndPestleRecipes", method.desc));
+                method.instructions.insertBefore(node, list);
+                break;
+            }
+        }
+        return write(cls);
+    }
 
+    public static byte[] transformJEIUtils(byte[] basicClass) {
+        ClassNode cls = read(basicClass);
+        for (MethodNode method : cls.methods) {
+            if (method.name.equals("setMortarRecipe")) {
+                Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
+                while (iterator.hasNext()) {
+                    AbstractInsnNode node = iterator.next();
+                    if (node.getOpcode() == BIPUSH) {
+                        IntInsnNode intsn = (IntInsnNode) node;
+                        int value = intsn.operand;
+                        if (value == -5) intsn.operand = -2;
+                        else if (value == 30) intsn.operand = 37;
+                    }
+                }
                 break;
             }
         }
