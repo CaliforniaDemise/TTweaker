@@ -17,12 +17,7 @@ public class PizzaCraftTransformer extends Dumbformer {
     public static byte[] transformCommonProxy(byte[] basicClass) {
         ClassNode cls = read(basicClass);
         for (MethodNode method : cls.methods) {
-            if (method.name.equals("preInitRegistries")) {
-                AbstractInsnNode node = method.instructions.getLast();
-                while (node.getOpcode() != RETURN) node = node.getPrevious();
-                method.instructions.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "com/tiviacz/pizzacraft/init/OreDictInit", "registerOres", "()V", false));
-            }
-            else if (method.name.equals("initRegistries")) {
+            if (method.name.equals("initRegistries")) {
                 Iterator<AbstractInsnNode> iterator = method.instructions.iterator();
                 while (iterator.hasNext()) {
                     AbstractInsnNode node = iterator.next();
@@ -32,6 +27,20 @@ public class PizzaCraftTransformer extends Dumbformer {
                     }
                 }
             }
+        }
+        return write(cls);
+    }
+
+    // Load ore dictionary entries after items get registered.
+    public static byte[] transformCommonEventHandler(byte[] basicClass) {
+        ClassNode cls = read(basicClass);
+        for (MethodNode method : cls.methods) {
+           if (method.name.equals("onItemRegister")) {
+               AbstractInsnNode node = method.instructions.getLast();
+               while (node.getOpcode() != RETURN) node = node.getPrevious();
+               method.instructions.insertBefore(node, new MethodInsnNode(INVOKESTATIC, "com/tiviacz/pizzacraft/init/OreDictInit", "registerOres", "()V", false));
+               break;
+           }
         }
         return write(cls);
     }

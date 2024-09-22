@@ -16,6 +16,7 @@ public class TTTransformer implements IClassTransformer, Opcodes {
             case "net.minecraft.inventory.ContainerBrewingStand": return BrewingFuelTransformer.transformContainerBrewingStand$Fuel(basicClass);
 
             case "com.tiviacz.pizzacraft.proxy.CommonProxy": return PizzaCraftTransformer.transformCommonProxy(basicClass);
+            case "com.tiviacz.pizzacraft.handlers.CommonEventHandler": return PizzaCraftTransformer.transformCommonEventHandler(basicClass);
             case "com.tiviacz.pizzacraft.blocks.BlockPizza": return PizzaCraftTransformer.transformBlockPizza(basicClass);
             case "com.tiviacz.pizzacraft.blocks.BlockChoppingBoard": return PizzaCraftTransformer.transformBlockChoppingBoard(basicClass);
             case "com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes": return PizzaCraftTransformer.transformChoppingBoardRecipes(basicClass);

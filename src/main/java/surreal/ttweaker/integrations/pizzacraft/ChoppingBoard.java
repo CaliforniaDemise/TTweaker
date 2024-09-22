@@ -37,7 +37,7 @@ public class ChoppingBoard {
     public static void removeByOutput(ItemStack output) {
         ChoppingBoardRecipes recipes = getManager();
         Map<ItemStack, ItemStack> map = recipes.getRecipes();
-        map.entrySet().removeIf(entry -> ItemStack.areItemStacksEqual(output, entry.getValue()));
+        map.entrySet().removeIf(entry -> ItemStack.areItemsEqual(output, entry.getValue()));
     }
 
     public static void removeByInput(ItemStack input) {
