@@ -16,12 +16,20 @@ Bakeware.addShapeless(<minecraft:stone>, [<ore:ingotGold> | <minecraft:stone>, <
 Bakeware.addShapeless(<minecraft:dirt>, [<minecraft:potato>.transformReplace(<minecraft:poisonous_potato>)]);
 Bakeware.addRecipe(<minecraft:dirt>, [<ore:ingotIron>, <minecraft:stone>]); // Same with addShapeless. Default Bakeware recipes are shapeless that's why this is here.
 
-// Removing recipes
+// Removing Recipes
 Bakeware.remove(<pizzacraft:raw_pizza_0>); // Removes recipe based on output
 Bakeware.removeAll(); // Removes all the default recipes
 
 // Mortar Recipes
-Mortar.addRecipe(<minecraft:stone>, 8, [<minecraft:diamond>, <ore:ingotGold>]); // Adds a recipe. Up to 2 inputs. Does not allow OR-Ingredients
+// Shaped Recipes. Inputs should have the same order with the recipe inputs. Up to 4 inputs.
+Mortar.addShaped(<minecraft:cobblestone>, 6, [<minecraft:stone> | <minecraft:stone:1> | <minecraft:stone:3> | <minecraft:stone:5>, <pizzacraft:onion_slices>]);
+
+// Shapeless Recipes. Up to 4 inputs
+Mortar.addShapeless(<minecraft:wool:1>, [<minecraft:wool>, <minecraft:dirt>]);
+Mortar.addShapeless(<minecraft:golden_apple>, [<minecraft:apple>, <minecraft:water_bucket>.noReturn() | <liquid:water> * 1000]);
+Mortar.addRecipe(<minecraft:stone>, 8, [<minecraft:diamond> | <minecraft:dirt>, <ore:ingotGold>]);
+
+// Removing Recipes
 Mortar.remove(<pizzacraft:flour_corn>); // Removes recipe based on output
 Mortar.removeAll(); // Removes all the default recipes
 
