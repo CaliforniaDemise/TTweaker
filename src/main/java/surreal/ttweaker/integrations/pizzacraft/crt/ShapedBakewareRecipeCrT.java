@@ -1,23 +1,23 @@
-package surreal.ttweaker.integrations.pizzacraft.impl;
+package surreal.ttweaker.integrations.pizzacraft.crt;
 
 import com.tiviacz.pizzacraft.gui.inventory.InventoryCraftingImproved;
+import crafttweaker.api.item.IIngredient;
+import crafttweaker.api.item.IItemStack;
+import crafttweaker.api.minecraft.CraftTweakerMC;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
+import surreal.ttweaker.integrations.pizzacraft.impl.ShapedBakewareRecipe;
 
-public class ShapedBakewareRecipe extends BakewareRecipe {
+public class ShapedBakewareRecipeCrT extends ShapedBakewareRecipe {
 
-    protected final int height, width;
-
-    // Inputs length needs to be always 9.
-    protected ShapedBakewareRecipe(ItemStack output, int height, int width, Object[] input) {
-        super(output, input);
-        this.height = height;
-        this.width = width;
+    protected ShapedBakewareRecipeCrT(ItemStack output, int height, int width, Object[] input) {
+        super(output, height, width, input);
     }
 
-    public static ShapedBakewareRecipe create(ItemStack output, String[] recipeMap, Object... input) {
+    public static ShapedBakewareRecipeCrT create(IItemStack output, String[] recipeMap, Object... input) {
         if (recipeMap.length == 0) throw new RuntimeException("Map array can't empty");
         if (recipeMap.length > 3) throw new RuntimeException("Map array can't be larger than 3");
         if ((input.length & 1) == 1) throw new RuntimeException("Problem has occurred while trying to read given inputs");
@@ -41,11 +41,12 @@ public class ShapedBakewareRecipe extends BakewareRecipe {
                 else inputs[slot] = inputMap.get(c);
             }
         }
-        return new ShapedBakewareRecipe(output, height, width, inputs);
+        return new ShapedBakewareRecipeCrT(CraftTweakerMC.getItemStack(output), height, width, inputs);
     }
 
     @Override
-    public boolean matches(InventoryCraftingImproved inv, World world) {
+    public NonNullList<ItemStack> getRemainingItems(InventoryCraftingImproved inv) {
+        NonNullList<ItemStack> list = super.getRemainingItems(inv);
         int start = -1;
         for (int i = 0; i < inv.getSizeInventory(); i++) {
             ItemStack s = inv.getStackInSlot(i);
@@ -53,42 +54,28 @@ public class ShapedBakewareRecipe extends BakewareRecipe {
                 start = i;
                 break;
             }
-            else if (!s.isEmpty()) return false;
         }
-        if (start == -1 || (start % 3) + this.width > 3 || (start / 3) + this.height > 3) return false;
-        int invSlot = -1;
+        int invSlot;
         for (int h = 0; h < this.height; h++) {
             for (int w = 0; w < this.width; w++) {
                 int slot = h + (w + (h * (width - 1)));
                 invSlot = start + slot;
-                if (invSlot >= inv.getSizeInventory()) return false;
                 ItemStack invStack = inv.getStackInSlot(invSlot);
                 Object inputObj = this.input[slot];
-                if (!isSame(invStack, inputObj)) return false;
+                if (isSame(invStack, inputObj)) {
+                    IIngredient ing = (IIngredient) inputObj;
+                    if (ing.hasNewTransformers()) {
+                        list.set(invSlot, CraftTweakerMC.getItemStack(ing.applyNewTransform(CraftTweakerMC.getIItemStack(invStack))));
+                    }
+                }
             }
         }
-        invSlot++;
-        for (; invSlot < inv.getSizeInventory(); ++invSlot) {
-            if (!inv.getStackInSlot(invSlot).isEmpty()) return false;
-        }
-        return true;
+        return list;
     }
 
     @Override
-    public ItemStack getCraftingResult(InventoryCraftingImproved inv) {
-        return this.output.copy();
-    }
-
-    @Override
-    public int getRecipeSize() {
-        return this.input.length;
-    }
-
-    public int getRecipeHeight() {
-        return this.height;
-    }
-
-    public int getRecipeWidth() {
-        return this.width;
+    protected boolean isSame(ItemStack stack, Object input) {
+        Ingredient ing = CraftTweakerMC.getIngredient((IIngredient) input);
+        return super.isSame(stack, ing);
     }
 }

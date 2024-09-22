@@ -1,6 +1,5 @@
 package surreal.ttweaker.integrations.pizzacraft;
 
-import com.tiviacz.pizzacraft.crafting.bakeware.IBakewareRecipe;
 import com.tiviacz.pizzacraft.crafting.bakeware.PizzaCraftingManager;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
@@ -12,14 +11,16 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.item.ItemStack;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
+import surreal.ttweaker.integrations.pizzacraft.crt.ShapedBakewareRecipeCrT;
+import surreal.ttweaker.integrations.pizzacraft.crt.ShapelessBakewareRecipeCrT;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapedBakewareRecipe;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessBakewareRecipe;
 import surreal.ttweaker.utils.CTUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+// TODO Handle IItemTransformerNews (applyNewTransform) on getRemainingItems
 @SuppressWarnings("unused") // Used by CraftTweaker
 public class Bakeware {
 
@@ -94,9 +95,6 @@ public class Bakeware {
                 obj[recipeMap.length + (g + 1)] = entry.getKey();
                 g += 2;
             }
-            for (Object o : obj) {
-                System.out.println(o);
-            }
             addShaped(output, obj);
         }
 
@@ -116,10 +114,10 @@ public class Bakeware {
                 int b = a - recipeMap.length;
                 char fuckYouCrT = args[a] instanceof String ? ((String) args[a]).charAt(0) : (char) args[a];
                 inputs[b] = fuckYouCrT;
-                inputs[b + 1] = CraftTweakerMC.getIngredient((IIngredient) args[a + 1]);
+                inputs[b + 1] = args[a + 1];
             }
             PizzaCraftingManager manager = getManager();
-            manager.addRecipe(ShapedBakewareRecipe.create(CraftTweakerMC.getItemStack(output), recipeMap, inputs));
+            manager.addRecipe(ShapedBakewareRecipeCrT.create(output, recipeMap, inputs));
         }
 
         @ZenMethod
@@ -130,7 +128,8 @@ public class Bakeware {
         @Deprecated
         @ZenMethod
         public static void addRecipe(IItemStack output, IIngredient[] inputs) {
-            Bakeware.addShapelessRecipe(CraftTweakerMC.getItemStack(output), (Object[]) CTUtils.getIngredients(inputs));
+            PizzaCraftingManager manager = getManager();
+            manager.addRecipe(ShapelessBakewareRecipeCrT.create(output, (Object[]) inputs));
         }
 
         @ZenMethod

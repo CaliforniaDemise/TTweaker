@@ -8,10 +8,12 @@ import crafttweaker.item.IIngredient;
 // Shaped Recipes
 // For some reason, you need to cast inputs to IIngredient[][]. If you know why CrT thinks it's 'IAny[]' please create an issue or pull a PR about it.
 Bakeware.addShaped(<minecraft:furnace>, [[<ore:ingotBrick>, <ore:ingotBrick>, <ore:ingotBrick>], [<ore:ingotBrick>, null, <ore:ingotBrick>], [<ore:ingotIron>, <ore:ingotIron>, <ore:ingotIron>]] as IIngredient[][]);
-Bakeware.addShaped(<minecraft:dirt>, "AAA", "BBB", 'A', <ore:ingotIron>, 'B', <ore:logWood>); // Suggested way
+Bakeware.addShaped(<minecraft:wool>, "AAA", "BBB", 'A', <ore:ingotIron>, 'B', <ore:logWood>); // Suggested way
+Bakeware.addShaped(<minecraft:dirt> * 8, "AAA", "ABA", "AAA", 'A', <minecraft:stone:*>, 'B', <minecraft:water_bucket>.noReturn());
 
 // Shapeless Recipes
 Bakeware.addShapeless(<minecraft:stone>, [<ore:ingotGold> | <minecraft:stone>, <ore:ingotBrick>, <ore:ingotGold> | <minecraft:stone>]);
+Bakeware.addShapeless(<minecraft:dirt>, [<minecraft:potato>.transformReplace(<minecraft:poisonous_potato>)]);
 Bakeware.addRecipe(<minecraft:dirt>, [<ore:ingotIron>, <minecraft:stone>]); // Same with addShapeless. Default Bakeware recipes are shapeless that's why this is here.
 
 // Removing recipes
