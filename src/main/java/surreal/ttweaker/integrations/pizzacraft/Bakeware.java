@@ -15,12 +15,10 @@ import surreal.ttweaker.integrations.pizzacraft.crt.ShapedBakewareRecipeCrT;
 import surreal.ttweaker.integrations.pizzacraft.crt.ShapelessBakewareRecipeCrT;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapedBakewareRecipe;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessBakewareRecipe;
-import surreal.ttweaker.utils.CTUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Handle IItemTransformerNews (applyNewTransform) on getRemainingItems
 @SuppressWarnings("unused") // Used by CraftTweaker
 public class Bakeware {
 
