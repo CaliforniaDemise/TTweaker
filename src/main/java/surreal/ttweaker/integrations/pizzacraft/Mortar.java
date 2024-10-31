@@ -1,5 +1,7 @@
 package surreal.ttweaker.integrations.pizzacraft;
 
+import com.cleanroommc.groovyscript.registry.VirtualizedRegistry;
+import com.tiviacz.pizzacraft.crafting.mortar.IMortarRecipe;
 import com.tiviacz.pizzacraft.crafting.mortar.MortarRecipeManager;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
@@ -11,8 +13,13 @@ import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 import surreal.ttweaker.integrations.pizzacraft.crt.ShapedMortarRecipeCrT;
 import surreal.ttweaker.integrations.pizzacraft.crt.ShapelessMortarRecipeCrT;
+import surreal.ttweaker.integrations.pizzacraft.grs.ShapedMortarRecipeGrS;
+import surreal.ttweaker.integrations.pizzacraft.grs.ShapelessMortarRecipeGrS;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapedMortarRecipe;
 import surreal.ttweaker.integrations.pizzacraft.impl.ShapelessMortarRecipe;
+
+import java.util.Iterator;
+import java.util.List;
 
 @SuppressWarnings("unused") // Used by GroovyScript / CraftTweaker
 public class Mortar {
@@ -37,6 +44,51 @@ public class Mortar {
 
     public static void removeAll() {
         getManager().getRecipeList().clear();
+    }
+
+    public static class GroovyScript extends VirtualizedRegistry<IMortarRecipe> {
+
+        @Override
+        public void onReload() {
+            removeScripted().forEach(getManager()::removeRecipe);
+            restoreFromBackup().forEach(getManager()::addRecipe);
+        }
+
+        public void addShaped(ItemStack output, int duration, List<com.cleanroommc.groovyscript.api.IIngredient> inputs) {
+            MortarRecipeManager manager = getManager();
+            ShapedMortarRecipeGrS recipe = ShapedMortarRecipeGrS.create(output, duration, inputs.toArray());
+            manager.addRecipe(recipe);
+            addScripted(recipe);
+        }
+
+        public void addShapeless(ItemStack output, int duration, List<com.cleanroommc.groovyscript.api.IIngredient> inputs) {
+            MortarRecipeManager manager = getManager();
+            ShapelessMortarRecipeGrS recipes = ShapelessMortarRecipeGrS.create(output, duration, inputs.toArray());
+            manager.addRecipe(recipes);
+            addScripted(recipes);
+        }
+
+        public void remove(ItemStack output) {
+            MortarRecipeManager manager = getManager();
+            Iterator<IMortarRecipe> iterator = manager.getRecipeList().iterator();
+            while (iterator.hasNext()) {
+                IMortarRecipe recipe = iterator.next();
+                if (ItemStack.areItemStacksEqual(recipe.getRecipeOutput(), output)) {
+                    addBackup(recipe);
+                    iterator.remove();
+                }
+            }
+        }
+
+        public void removeAll() {
+            MortarRecipeManager manager = getManager();
+            Iterator<IMortarRecipe> iterator = manager.getRecipeList().iterator();
+            while (iterator.hasNext()) {
+                IMortarRecipe recipe = iterator.next();
+                addBackup(recipe);
+                iterator.remove();
+            }
+        }
     }
 
     @ZenRegister

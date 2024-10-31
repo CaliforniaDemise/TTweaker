@@ -1,5 +1,6 @@
 package surreal.ttweaker.integrations.pizzacraft;
 
+import com.cleanroommc.groovyscript.registry.VirtualizedRegistry;
 import com.tiviacz.pizzacraft.crafting.chopping.ChoppingBoardRecipes;
 import crafttweaker.annotations.ModOnly;
 import crafttweaker.annotations.ZenRegister;
@@ -10,9 +11,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 import stanhebben.zenscript.annotations.ZenClass;
 import stanhebben.zenscript.annotations.ZenMethod;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("unused") // Used by GroovyScript / CraftTweaker
@@ -64,6 +69,56 @@ public class ChoppingBoard {
 
     private static ChoppingBoardRecipes getManager() {
         return ChoppingBoardRecipes.instance();
+    }
+
+    public static class GroovyScript extends VirtualizedRegistry<Pair<ItemStack, ItemStack>> {
+
+        @Override
+        public void onReload() {
+            removeScripted().forEach(p -> ChoppingBoard.removeByInput(p.getLeft()));
+            restoreFromBackup().forEach(p -> ChoppingBoard.addRecipe(p.getRight(), p.getLeft()));
+        }
+
+        public void addRecipe(ItemStack output, com.cleanroommc.groovyscript.api.IIngredient input) {
+            for (ItemStack in : input.getMatchingStacks()) {
+                ChoppingBoard.addRecipe(output, in);
+                addScripted(Pair.of(in, output));
+            }
+        }
+
+        public void removeByOutput(ItemStack output) {
+            ChoppingBoardRecipes manager = getManager();
+            Iterator<Map.Entry<ItemStack, ItemStack>> iterator = manager.getRecipes().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<ItemStack, ItemStack> entry = iterator.next();
+                if (ItemStack.areItemStacksEqual(entry.getValue(), output)) {
+                    addBackup(Pair.of(entry.getKey(), entry.getValue()));
+                    iterator.remove();
+                }
+            }
+        }
+
+        public void removeByInput(com.cleanroommc.groovyscript.api.IIngredient input) {
+            ChoppingBoardRecipes manager = getManager();
+            Iterator<Map.Entry<ItemStack, ItemStack>> iterator = manager.getRecipes().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<ItemStack, ItemStack> entry = iterator.next();
+                if (input.test(entry.getKey())) {
+                    addBackup(Pair.of(entry.getKey(), entry.getValue()));
+                    iterator.remove();
+                }
+            }
+        }
+
+        public void removeAll() {
+            ChoppingBoardRecipes manager = getManager();
+            Iterator<Map.Entry<ItemStack, ItemStack>> iterator = manager.getRecipes().entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<ItemStack, ItemStack> entry = iterator.next();
+                addBackup(Pair.of(entry.getKey(), entry.getValue()));
+                iterator.remove();
+            }
+        }
     }
 
     @ZenRegister
