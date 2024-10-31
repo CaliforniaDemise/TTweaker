@@ -20,7 +20,7 @@ Bakeware.addRecipe(<minecraft:dirt>, [<ore:ingotIron>, <minecraft:stone>]); // S
 Bakeware.remove(<pizzacraft:raw_pizza_0>); // Removes recipe based on output
 Bakeware.removeAll(); // Removes all the default recipes
 
-// Mortar Recipes
+# Mortar Recipes 1 Output -> 1-4 inputs
 // Shaped Recipes. Inputs should have the same order with the recipe inputs. Up to 4 inputs.
 Mortar.addShaped(<minecraft:cobblestone>, 6, [<minecraft:stone> | <minecraft:stone:1> | <minecraft:stone:3> | <minecraft:stone:5>, <pizzacraft:onion_slice>]);
 
@@ -33,7 +33,7 @@ Mortar.addRecipe(<minecraft:stone>, 8, [<minecraft:diamond> | <minecraft:dirt>, 
 Mortar.remove(<pizzacraft:flour_corn>); // Removes recipe based on output
 Mortar.removeAll(); // Removes all the default recipes
 
-// Chopping Board Recipes
+# Chopping Board Recipes 1 Output -> 1 Input
 ChoppingBoard.addRecipe(<minecraft:wool>, <minecraft:pumpkin> | <minecraft:brewing_stand>); // Adds a recipe. Allows OR-Ingredients
 ChoppingBoard.addRecipe(<minecraft:iron_ingot>, <ore:plankWood>);
 
@@ -42,6 +42,6 @@ ChoppingBoard.removeByInput(<ore:cropTomato> | <pizzacraft:cucumber>); // Remove
 
 ChoppingBoard.removeAll(); // Removes all the default recipes
 
-// Custom peels and knives
+# Custom peels and knives
 <ore:toolPeel>.add(<minecraft:stone_sword>);
 <ore:toolKnife>.add(<minecraft:diamond_axe>);
