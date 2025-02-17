@@ -86,19 +86,6 @@ public class Bakeware {
             }
         }
 
-        public void addShapedRecipe(ItemStack output, List<String> recipeMap, List<com.cleanroommc.groovyscript.api.IIngredient> inputs) {
-            String[] mapArr = recipeMap.toArray(new String[0]);
-            Object[] inputArr = inputs.toArray();
-            try {
-                ShapedBakewareRecipeGrS recipe = ShapedBakewareRecipeGrS.create(output, mapArr, inputArr);
-                addScripted(recipe);
-            }
-            catch (Exception e) {
-                GroovyLog.get().error("Error while adding recipe to Bakeware, {}", e.getMessage());
-                e.printStackTrace();
-            }
-        }
-
         public void addShapedRecipe(ItemStack output, List<List<com.cleanroommc.groovyscript.api.IIngredient>> inputs) {
             int height = inputs.size();
             int width = inputs.get(0).size();
