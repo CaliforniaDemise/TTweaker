@@ -89,7 +89,6 @@ public abstract class BakewareRecipeGrS extends BakewareRecipe implements ICraft
     @NotNull
     public abstract CraftingRecipe.MatchList getMatchingList(InventoryCrafting inv);
 
-    // TODO
     private static EntityPlayer getPlayerFromInventory(InventoryCrafting inventory) {
         Container eventHandler = ((InventoryCraftingAccess) inventory).getEventHandler();
         if (eventHandler != null) {

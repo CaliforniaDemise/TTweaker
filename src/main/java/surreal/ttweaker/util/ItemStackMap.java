@@ -3,6 +3,7 @@ package surreal.ttweaker.util;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.item.ItemStack;
 
+@SuppressWarnings("unused")
 public class ItemStackMap<V> extends Object2ObjectOpenCustomHashMap<ItemStack, V> {
 
     private final V defaultValue;
