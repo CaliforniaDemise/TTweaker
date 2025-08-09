@@ -28,7 +28,13 @@ minecraft {
     
     def args = ["-ea:${project.group}"]
     args << '-Dfml.coreMods.load=' + coremod_plugin_class_name
-    args << "-Xms128m" << "-Xmx2048m"
+    args << '-Xms128m' << '-Xmx2048m'
+    if (project.use_groovyscript.toBoolean()) {
+        args << '-Dgroovyscript.use_examples_folder=true'
+                << '-Dgroovyscript.generate_examples=true'
+                << '-Dgroovyscript.log_missing_lang_keys=true'
+    }
+
     extraRunJvmArguments.addAll(args)
     useDependencyAccessTransformers = true
     injectedTags.put('VERSION', project.version)

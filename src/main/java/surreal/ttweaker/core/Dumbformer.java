@@ -36,6 +36,7 @@ public abstract class Dumbformer implements Opcodes {
     }
 
     protected static byte[] write(ClassNode cls) {
+        if (FMLLaunchHandler.isDeobfuscatedEnvironment()) writeClass(cls);
         return write(cls, ClassWriter.COMPUTE_MAXS);
     }
 
@@ -44,7 +45,6 @@ public abstract class Dumbformer implements Opcodes {
     }
 
     protected static void writeClass(ClassNode cls) {
-        if (!FMLLaunchHandler.isDeobfuscatedEnvironment()) return;
         FileOutputStream stream;
         File file = new File(Minecraft.getMinecraft().gameDir, "classOutputs/" + cls.name + ".class");
         file.getParentFile().mkdirs();

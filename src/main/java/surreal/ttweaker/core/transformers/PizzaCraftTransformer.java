@@ -1,5 +1,11 @@
 package surreal.ttweaker.core.transformers;
 
+import com.tiviacz.pizzacraft.tileentity.TileEntityMortarAndPestle;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.items.ItemStackHandler;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
@@ -7,12 +13,15 @@ import org.objectweb.asm.tree.*;
 import surreal.ttweaker.core.Dumbformer;
 
 import java.util.Iterator;
+import java.util.List;
 
 // TODO Add support for that cooker
 /**
  * Add support for PizzaCraft
  **/
 public class PizzaCraftTransformer extends Dumbformer {
+
+    private static final String HOOKS = "surreal/ttweaker/core/transformers/PizzaCraftTransformer$Hooks";
 
     // Transform CommonProxy to load ore dict entries early. They somehow initialize after CraftTweaker adds the recipes.
     public static byte[] transformCommonProxy(byte[] basicClass) {
@@ -49,7 +58,7 @@ public class PizzaCraftTransformer extends Dumbformer {
     public static byte[] transformBlockPizza(byte[] basicClass) {
         ClassNode cls = read(basicClass);
         { // TT$isItem
-            MethodVisitor m = cls.visitMethod(ACC_PRIVATE | ACC_STATIC, "TT$isItem", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/Item;Ljava/lang/String;)Z", null, null);
+            MethodVisitor m = cls.visitMethod(ACC_PUBLIC | ACC_STATIC, "TT$isItem", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/Item;Ljava/lang/String;)Z", null, null);
             {
                 m.visitVarInsn(ALOAD, 0);
                 m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", getName("isEmpty", "func_190926_b"), "()Z", false);
@@ -154,7 +163,7 @@ public class PizzaCraftTransformer extends Dumbformer {
                         InsnList list = new InsnList();
                         list.add(new FieldInsnNode(GETSTATIC, "com/tiviacz/pizzacraft/init/ModItems", "KNIFE", "Lnet/minecraft/item/Item;"));
                         list.add(new LdcInsnNode("toolKnife"));
-                        list.add(new MethodInsnNode(INVOKESTATIC, cls.name, "TT$isItem", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/Item;Ljava/lang/String;)Z", false));
+                        list.add(new MethodInsnNode(INVOKESTATIC, "com/tiviacz/pizzacraft/blocks/BlockPizza", "TT$isItem", "(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/Item;Ljava/lang/String;)Z", false));
                         method.instructions.insert(node, list);
                         method.instructions.remove(node.getPrevious());
                         iterator.remove();
@@ -251,111 +260,8 @@ public class PizzaCraftTransformer extends Dumbformer {
         { // onTake
             MethodVisitor m = cls.visitMethod(ACC_PUBLIC | ACC_STATIC, "onTake", desc, null, null);
             m.visitVarInsn(ALOAD, 0);
-            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntity", getName("getWorld", ""), "()Lnet/minecraft/world/World;", false);
-            m.visitVarInsn(ASTORE, 2);
-            m.visitVarInsn(ALOAD, 0);
-            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/tileentity/TileEntity", getName("getPos", ""), "()Lnet/minecraft/util/math/BlockPos;", false);
-            m.visitVarInsn(ASTORE, 3);
-            m.visitVarInsn(ALOAD, 0);
-            m.visitMethodInsn(INVOKEVIRTUAL, "com/tiviacz/pizzacraft/tileentity/TileEntityMortarAndPestle", "getInventory", "()Lnet/minecraftforge/items/ItemStackHandler;", false);
-            m.visitVarInsn(ASTORE, 4);
-
-            m.visitInsn(ICONST_0);
-            m.visitVarInsn(ISTORE, 5);
-
-            Label l_con_goto = new Label();
-            m.visitLabel(l_con_goto);
-            m.visitFrame(F_APPEND, 3, new Object[] { "net/minecraft/world/World", "net/minecraft/util/math/BlockPos", "net/minecraftforge/items/ItemStackHandler" }, 0, null);
-            m.visitVarInsn(ILOAD, 5);
-            m.visitVarInsn(ALOAD, 4);
-            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/items/ItemStackHandler", "getSlots", "()I", false);
-            Label l_con_slots = new Label();
-            m.visitJumpInsn(IF_ICMPGE, l_con_slots);
-
-            m.visitVarInsn(ALOAD, 4);
-            m.visitVarInsn(ILOAD, 5);
-            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/items/ItemStackHandler", "getStackInSlot", "(I)Lnet/minecraft/item/ItemStack;", false);
-            m.visitVarInsn(ASTORE, 6);
-
-            m.visitVarInsn(ALOAD, 6);
-            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", getName("isEmpty", "func_190926_b"), "()Z", false);
-            Label l_con_empty = new Label();
-            m.visitJumpInsn(IFEQ, l_con_empty);
-            Label l_con_goto2 = new Label();
-            m.visitJumpInsn(GOTO, l_con_goto2);
-            m.visitLabel(l_con_empty);
-            m.visitFrame(F_APPEND, 2, new Object[] { INTEGER, "net/minecraft/item/ItemStack" }, 0, null);
-            m.visitVarInsn(ALOAD, 6);
-            m.visitInsn(ICONST_1);
-            m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/item/ItemStack", getName("shrink", ""), "(I)V", false);
-
             m.visitVarInsn(ALOAD, 1);
-            m.visitVarInsn(ILOAD, 5);
-            m.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "get", "(I)Ljava/lang/Object;", true);
-            m.visitTypeInsn(CHECKCAST, "net/minecraft/item/ItemStack");
-            m.visitVarInsn(ASTORE, 7);
-
-            {
-                m.visitVarInsn(ALOAD, 7);
-                m.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "isEmpty", "()Z", true);
-                Label l_con_emptyList = new Label();
-                m.visitJumpInsn(IFNE, l_con_emptyList);
-                m.visitVarInsn(ALOAD, 4);
-                m.visitVarInsn(ILOAD, 5);
-                m.visitVarInsn(ALOAD, 7);
-                m.visitInsn(ICONST_0);
-                m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraftforge/items/ItemStackHandler", "insertItem", "(ILnet/minecraft/item/ItemStack;I)Lnet/minecraft/item/ItemStack;", false);
-                m.visitVarInsn(ASTORE, 7);
-                m.visitLabel(l_con_emptyList);
-                m.visitFrame(F_APPEND, 1, new Object[] { "net/minecraft/item/ItemStack" }, 0, null);
-            }
-            {
-                m.visitVarInsn(ALOAD, 7);
-                m.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "isEmpty", "()Z", true);
-                Label l_con_emptyList = new Label();
-                m.visitJumpInsn(IFNE, l_con_emptyList);
-                m.visitVarInsn(ALOAD, 2);
-                m.visitFieldInsn(GETFIELD, "net/minecraft/world/World", getName("isRemote", ""), "Z");
-                m.visitJumpInsn(IFNE, l_con_emptyList);
-                m.visitVarInsn(ALOAD, 2);
-                m.visitTypeInsn(NEW, "net/minecraft/entity/item/EntityItem");
-                m.visitInsn(DUP);
-
-                m.visitVarInsn(ALOAD, 3);
-                m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/util/math/BlockPos", getName("getX", ""), "()I", false);
-                m.visitInsn(I2D);
-                m.visitLdcInsn(0.5D);
-                m.visitInsn(DADD);
-
-                m.visitVarInsn(ALOAD, 3);
-                m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/util/math/BlockPos", getName("getY", ""), "()I", false);
-                m.visitInsn(I2D);
-                m.visitLdcInsn(0.5D);
-                m.visitInsn(DADD);
-
-                m.visitVarInsn(ALOAD, 3);
-                m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/util/math/BlockPos", getName("getZ", ""), "()I", false);
-                m.visitInsn(I2D);
-                m.visitLdcInsn(0.5D);
-                m.visitInsn(DADD);
-
-                m.visitMethodInsn(INVOKESPECIAL, "net/minecraft/entity/item/EntityItem", "<init>", "(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", false);
-                m.visitMethodInsn(INVOKEVIRTUAL, "net/minecraft/world/World", getName("spawnEntity", ""), "(Lnet/minecraft/entity/Entity;)Z", false);
-                m.visitLabel(l_con_emptyList);
-                m.visitFrame(F_CHOP, 3, null, 0, null);
-            }
-
-            m.visitLabel(l_con_goto2);
-//            m.visitFrame();
-
-            m.visitVarInsn(ILOAD, 5);
-            m.visitInsn(ICONST_1);
-            m.visitInsn(IADD);
-            m.visitVarInsn(ISTORE, 5);
-            m.visitJumpInsn(GOTO, l_con_goto);
-            m.visitLabel(l_con_slots);
-            m.visitFrame(F_CHOP, 3, null, 0, null);
-
+            m.visitMethodInsn(INVOKESTATIC, HOOKS, "$MortarOnTake", desc, false);
             m.visitInsn(RETURN);
         }
         return write(cls);
@@ -413,5 +319,27 @@ public class PizzaCraftTransformer extends Dumbformer {
             }
         }
         return write(cls);
+    }
+
+    @SuppressWarnings("unused")
+    public static class Hooks {
+        public static void $MortarOnTake(TileEntityMortarAndPestle te, List<ItemStack> list) {
+            World world = te.getWorld();
+            BlockPos pos = te.getPos();
+            ItemStackHandler inv = te.getInventory();
+            for (int i = 0; i < inv.getSlots(); i++) {
+                ItemStack invStack = inv.getStackInSlot(i);
+                if (invStack.isEmpty()) continue;
+                invStack.shrink(1);
+                ItemStack remaining = list.get(i);
+                if (!remaining.isEmpty()) {
+                    remaining = inv.insertItem(i, remaining, false);
+                }
+                if (!remaining.isEmpty() && !world.isRemote) {
+                    EntityItem entity = new EntityItem(world, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, remaining);
+                    world.spawnEntity(entity);
+                }
+            }
+        }
     }
 }

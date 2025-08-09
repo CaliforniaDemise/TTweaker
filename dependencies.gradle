@@ -6,7 +6,7 @@ repositories {
     }
     maven {
         name 'CurseMaven'
-        url 'https://cursemaven.com'
+        url 'https://curse.cleanroommc.com'
         content {
             includeGroup 'curse.maven'
         }

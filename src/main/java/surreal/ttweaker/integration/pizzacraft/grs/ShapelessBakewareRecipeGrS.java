@@ -1,55 +1,62 @@
 package surreal.ttweaker.integration.pizzacraft.grs;
 
 import com.cleanroommc.groovyscript.api.IIngredient;
-import com.tiviacz.pizzacraft.gui.inventory.InventoryCraftingImproved;
+import com.cleanroommc.groovyscript.compat.vanilla.CraftingRecipe;
+import groovy.lang.Closure;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import surreal.ttweaker.integration.pizzacraft.impl.ShapelessBakewareRecipe;
+import org.jetbrains.annotations.Nullable;
 
-public class ShapelessBakewareRecipeGrS extends ShapelessBakewareRecipe {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-    protected ShapelessBakewareRecipeGrS(ItemStack output, Object[] input) {
-        super(output, input);
-    }
+public class ShapelessBakewareRecipeGrS extends BakewareRecipeGrS {
 
-    public static ShapelessBakewareRecipeGrS create(@NotNull ItemStack output, Object... inputs) {
-        return new ShapelessBakewareRecipeGrS(output, inputs);
+    public ShapelessBakewareRecipeGrS(@NotNull ItemStack output, Object[] input, @Nullable Closure<Void> recipeAction, @Nullable Closure<ItemStack> recipeFunction) {
+        super(output, input, recipeAction, recipeFunction);
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCraftingImproved inv) {
-        NonNullList<ItemStack> list = super.getRemainingItems(inv);
-        boolean[] inputCheck = new boolean[this.input.length];
+    public @NotNull CraftingRecipe.MatchList getMatchingList(InventoryCrafting inv) {
+        CraftingRecipe.MatchList matches = new CraftingRecipe.MatchList();
+
+        List<Pair<ItemStack, Integer>> givenInputs = new ArrayList<>();
+        // collect all items from the crafting matrix
         for (int i = 0; i < inv.getSizeInventory(); i++) {
-            ItemStack invStack = inv.getStackInSlot(i);
-            if (!invStack.isEmpty()) {
-                for (int ingI = 0; ingI < this.input.length; ingI++) {
-                    Object ing = this.input[ingI];
-                    IIngredient ingredient = (IIngredient) ing;
-                    if (!inputCheck[ingI] && this.isSame(invStack, ing)) {
-                        inputCheck[ingI] = true;
-                        ItemStack remaining = ingredient.applyTransform(invStack);
-                        list.set(i, remaining);
-                    }
-                }
+            ItemStack itemstack = inv.getStackInSlot(i);
+            if (!itemstack.isEmpty()) {
+                givenInputs.add(Pair.of(itemstack, i));
             }
         }
-        return list;
-    }
+        // check if expected and given inputs have the same count
+        if (givenInputs.isEmpty() || givenInputs.size() != input.length) return CraftingRecipe.MatchList.EMPTY;
+        List<IIngredient> input = new ArrayList<>();
+        for (Object in : this.input) input.add((IIngredient) in);
+        // go through each expected input and try to match it to a given input
+        Iterator<IIngredient> ingredientIterator = input.iterator();
+        main:
+        while (ingredientIterator.hasNext()) {
+            IIngredient ingredient = ingredientIterator.next();
 
-    @Override
-    public Object[] getInput() {
-        Object[] objects = new Object[this.input.length];
-        for (int i = 0; i < this.input.length; i++) {
-            Object o = this.input[i];
-            objects[i] = ((IIngredient) o).toMcIngredient();
+            Iterator<Pair<ItemStack, Integer>> pairIterator = givenInputs.iterator();
+            while (pairIterator.hasNext()) {
+                Pair<ItemStack, Integer> pair = pairIterator.next();
+                if (matches(ingredient, pair.getLeft())) {
+                    // expected input matches given input so both get removed, so they don't get checked again
+                    matches.addMatch(ingredient, pair.getLeft(), pair.getRight());
+                    ingredientIterator.remove();
+                    pairIterator.remove();
+                    if (givenInputs.isEmpty()) break main;
+                    // skip to next expected ingredient
+                    continue main;
+                }
+            }
+            // at this point no given input could be matched for this expected input so return false
+            return CraftingRecipe.MatchList.EMPTY;
         }
-        return objects;
-    }
-
-    @Override
-    protected boolean isSame(ItemStack stack, Object input) {
-        return ((IIngredient) input).test(stack);
+        return input.isEmpty() ? matches : CraftingRecipe.MatchList.EMPTY;
     }
 }

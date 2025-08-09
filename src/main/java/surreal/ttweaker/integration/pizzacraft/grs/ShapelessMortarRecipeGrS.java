@@ -5,6 +5,7 @@ import com.tiviacz.pizzacraft.tileentity.TileEntityMortarAndPestle;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
 import surreal.ttweaker.integration.pizzacraft.impl.ShapelessMortarRecipe;
 
 import javax.annotation.Nonnull;
@@ -15,11 +16,7 @@ public class ShapelessMortarRecipeGrS extends ShapelessMortarRecipe {
         super(output, duration, inputs);
     }
 
-    public static ShapelessMortarRecipeGrS create(ItemStack output, int duration, Object... inputs) {
-        if (output.isEmpty()) throw new RuntimeException("Output can't be empty");
-        if (inputs.length == 0) throw new RuntimeException("There should at least be one input");
-        if (inputs.length > 4) throw new RuntimeException("There can't be more than four inputs");
-        if (duration <= 0) throw new RuntimeException("Duration can't be less than or equal to 0");
+    public static ShapelessMortarRecipeGrS create(@NotNull ItemStack output, int duration, Object... inputs) {
         return new ShapelessMortarRecipeGrS(output, duration, inputs);
     }
 

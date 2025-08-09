@@ -13,8 +13,9 @@ public class TTTransformer implements IClassTransformer, Opcodes {
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         switch (transformedName) {
             case "net.minecraft.tileentity.TileEntityBrewingStand": return BrewingFuelTransformer.transformTileEntityBrewingStand(basicClass);
-            case "net.minecraft.inventory.ContainerBrewingStand": return BrewingFuelTransformer.transformContainerBrewingStand$Fuel(basicClass);
-
+            case "net.minecraft.inventory.ContainerBrewingStand$Fuel": return BrewingFuelTransformer.transformContainerBrewingStand$Fuel(basicClass);
+        }
+        switch (transformedName) {
             case "com.tiviacz.pizzacraft.proxy.CommonProxy": return PizzaCraftTransformer.transformCommonProxy(basicClass);
             case "com.tiviacz.pizzacraft.handlers.CommonEventHandler": return PizzaCraftTransformer.transformCommonEventHandler(basicClass);
             case "com.tiviacz.pizzacraft.blocks.BlockPizza": return PizzaCraftTransformer.transformBlockPizza(basicClass);
